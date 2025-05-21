@@ -2,4 +2,4 @@
 
 ---
 
-**ShellEdit** is a simple and lightweight terminal-based text editor.
+**ShellEdit** is a simple and lightweight text editor.
