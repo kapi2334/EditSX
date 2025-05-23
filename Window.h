@@ -97,7 +97,10 @@ namespace sxEditCore{
                return _windowHandle != nullptr; 
             }
             //Show created window
-            void Show(int nCmdShow){
+            void Show(int nCmdShow, bool cmdWindowVisibility = true){
+               if(!cmdWindowVisibility){
+                    ShowWindow(GetConsoleWindow(),SW_HIDE);
+               } 
                ShowWindow(_windowHandle,nCmdShow); 
             }
 
