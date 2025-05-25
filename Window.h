@@ -49,6 +49,12 @@ namespace sxEditCore{
                     case WM_DESTROY:
                         PostQuitMessage(0);
                         return 0;
+                        //Setting min. window size    
+                    case WM_GETMINMAXINFO:{
+                        MINMAXINFO* minmax = (MINMAXINFO*)lParam;
+                        minmax->ptMinTrackSize.x = 300;
+                        minmax->ptMinTrackSize.y = 300;
+                    }
                     default:
                         return DefWindowProc(hwnd,uMsg,wParam,lParam);
                 }
