@@ -1,4 +1,5 @@
 //Window logic handling f.e. drawing, getting keys etc.
+#include <windef.h>
 #include <windows.h>
 #include <string.h>
 #include <winuser.h>
@@ -59,6 +60,7 @@ namespace sxEditCore{
                 wclass.lpfnWndProc = Proc;
                 wclass.hInstance = _windowInstance;
                 wclass.lpszClassName = _className;
+                wclass.hbrBackground = (HBRUSH)(COLOR_WINDOW+15);  
                 return wclass;
             }
 
