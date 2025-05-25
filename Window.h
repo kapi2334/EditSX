@@ -1,8 +1,6 @@
 //Window logic handling f.e. drawing, getting keys etc.
-#include <windef.h>
 #include <windows.h>
 #include <string.h>
-#include <winuser.h>
 namespace sxEditCore{
 
     class WindowsWindowLogic {

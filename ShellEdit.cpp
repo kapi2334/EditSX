@@ -1,4 +1,5 @@
 #include "Window.h"
+#include "Data structures/DoublyLinkedList.h"
 #include <stdexcept>
 
 #if defined(_WIN64) || defined(_WIN32)
