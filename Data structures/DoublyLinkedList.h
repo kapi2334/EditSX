@@ -30,7 +30,7 @@ namespace sxEditCore::dataStructures{
                Last = nullptr;
             }
             //Adds value (input) to front of the List
-            int push_front(char input){
+            int pushFront(char input){
                 dlNode *newNode =(dlNode*) malloc(sizeof(dlNode));
                 newNode->value = input; 
                 newNode->prev = nullptr;
@@ -39,9 +39,26 @@ namespace sxEditCore::dataStructures{
                     First->prev = newNode;
                 }
                 First = newNode;
-                
+                size++;
                 return 0;
             }
+            int pushBack(char input){
+                dlNode* newNode = (dlNode*)malloc(sizeof(dlNode));
+                newNode->value = input;
+                newNode->next = nullptr;
+
+                if(First == nullptr){
+                    newNode->prev = nullptr;
+                    First = newNode;
+                    Last = newNode;
+                    return 0;
+                }
+                
+                newNode -> prev = Last;
+                Last -> next = newNode;
+                
+            }
+
    }; 
 
 }
