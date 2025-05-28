@@ -6,17 +6,17 @@ namespace sxEditCore::dataStructures{
     class dlList{
         private:
             //Single node declaration
-            typedef struct dlNode{
+            struct dlNode{
                 char value;
                 struct dlNode* next;
                 struct dlNode* prev;
-            } dlNode; 
+            } ; 
 
             //Cahed node declaration
-            typedef struct dlCachedNode{
+            struct dlCachedNode{
                 int index = -1;
                 dlNode *nodeAddress= nullptr;
-            } dlCachedNode; 
+            };  
 
             //TO DO: CALCULATING THE THERSHOLD VALUE DEPENDING ON THE SIZE VARIABLE
             int cacheTreshold = 20;
@@ -42,7 +42,7 @@ namespace sxEditCore::dataStructures{
                         if(nodeIndex - cachedNode.index > 0 ){
                             //Iterating to node from cached one using next property.
                             
-                            while(cachedNode.index <= nodeIndex){
+                            while(cachedNode.index < nodeIndex){
                                cachedNode.index++;
                                cachedNode.nodeAddress = cachedNode.nodeAddress->next;
                             }
@@ -55,7 +55,7 @@ namespace sxEditCore::dataStructures{
                         else if(nodeIndex - cachedNode.index < 0 ){
                             //Iterating to node from cahed one using prev property.
 
-                            while(cachedNode.index >= nodeIndex){
+                            while(cachedNode.index > nodeIndex){
                                 
                                cachedNode.index--;
                                cachedNode.nodeAddress = cachedNode.nodeAddress->prev;
@@ -89,7 +89,7 @@ namespace sxEditCore::dataStructures{
                     if(index <= size/2){
                     //Targeted node is closer to the front of the list 
                         outNode = First;
-                        for(int i = 0; i <= (index - 1); i++){
+                        for(int i = 0; i < (index - 1); i++){
                             outNode = outNode->next;
                         }
                         return outNode;
@@ -99,7 +99,7 @@ namespace sxEditCore::dataStructures{
                     else{
                     //Targeted node is closer to the end of the list
                         outNode = Last;
-                        for(int i = size; i >= (index - 1); i--){
+                        for(int i = size - 1; i > (index - 1); i--){
                             outNode = outNode->prev;
                         }
                         return outNode;
@@ -117,20 +117,24 @@ namespace sxEditCore::dataStructures{
             }
             //Adds value (input) to the front of the List
             int pushFront(char input){
-                dlNode *newNode =(dlNode*) malloc(sizeof(dlNode));
+                dlNode *newNode = new dlNode;
                 newNode->value = input; 
                 newNode->prev = nullptr;
                 newNode->next = First;
+                if(Last == nullptr) Last = newNode;
                 if(First != nullptr){
                     First->prev = newNode;
                 }
                 First = newNode;
                 size++;
+                //Updating cache
+                cachedNode.nodeAddress = newNode;
+                cachedNode.index = 0;
                 return 0;
             }
             //Adds value (input) to the back of the list
             int pushBack(char input){
-                dlNode* newNode = (dlNode*)malloc(sizeof(dlNode));
+                dlNode *newNode = new dlNode;
                 newNode->value = input;
                 newNode->next = nullptr;
 
@@ -138,12 +142,21 @@ namespace sxEditCore::dataStructures{
                     newNode->prev = nullptr;
                     First = newNode;
                     Last = newNode;
+                    size++;
+                    //Updating cache
+                    cachedNode.nodeAddress = newNode;
+                    cachedNode.index = 0;
                     return 0;
                 }
 
                 newNode -> prev = Last;
                 Last -> next = newNode;
                 Last = newNode;
+                size++;
+                //Updating cache
+                cachedNode.nodeAddress = newNode;
+                cachedNode.index = size - 1;
+                return size - 1;
             }
             //Return value of node with specified index.
             char get(int index){ 
