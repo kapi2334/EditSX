@@ -36,19 +36,28 @@ namespace sxEditCore::dataStructures{
                 if(nodeIndex >= size || nodeIndex < 0) return nullptr; //If index is outside the array
                     if(std::abs(nodeIndex - cachedNode.index) < cacheTreshold){ //Success - finding node using one in cashe can be done.
                         //Cashe types
-                        
                         if(nodeIndex - cachedNode.index > 0 ){
                             //Iterating to node from cached one using next property.
+                            
+                            while(cachedNode.index <= nodeIndex){
+                               cachedNode.index++;
+                               cachedNode.nodeAddress = cachedNode.nodeAddress->next;
+                            }
+                            return cachedNode.nodeAddress;
                         }
                         else if(nodeIndex - cachedNode.index == 0 ){
-                        
                             //Requested node its that one in the cache
                             return cachedNode.nodeAddress;
                         }
                         else if(nodeIndex - cachedNode.index < 0 ){
-
                             //Iterating to node from cahed one using prev property.
 
+                            while(cachedNode.index >= nodeIndex){
+                                
+                               cachedNode.index--;
+                               cachedNode.nodeAddress = cachedNode.nodeAddress->prev;
+                            }
+                            return cachedNode.nodeAddress;
                         }
 
                     }
