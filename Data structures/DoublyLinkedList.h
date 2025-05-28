@@ -21,6 +21,9 @@ namespace sxEditCore::dataStructures{
             //TO DO: CALCULATING THE THERSHOLD VALUE DEPENDING ON THE SIZE VARIABLE
             int cacheTreshold = 20;
             dlCachedNode cachedNode; 
+            
+            //Char that is returned(displayed) when error occured in node (fe nullptr was returned).
+            char errorChar = '#';
 
             int size; //Acual size of this list
             dlNode *First; //Pointer to first node (head)
@@ -31,7 +34,7 @@ namespace sxEditCore::dataStructures{
              *Returns nullptr when cashing attempt failed - fe. if CahedNode is empty, 
              or if targetted node and cahed one are too away.
              * */
-            dlNode* tryToCahe(int nodeIndex){
+            dlNode* tryToCache(int nodeIndex){
                 if(cachedNode.nodeAddress == nullptr ) return nullptr; //If cahed node doesnt exist
                 if(nodeIndex >= size || nodeIndex < 0) return nullptr; //If index is outside the array
                     if(std::abs(nodeIndex - cachedNode.index) < cacheTreshold){ //Success - finding node using one in cashe can be done.
@@ -65,7 +68,46 @@ namespace sxEditCore::dataStructures{
                 
                 
             }
+            /*Returns address of node which is located at given index.
+             *Function is optimized to begin node finding operation from most efficient node. 
+             */
+            dlNode* getNode(int index){
+                //Index validity checks.
+                if(index < 0 ) return nullptr;
+                if(index >= size) return nullptr;
+                //Cases when index is first or last
+                if(index == 0) return First;
+                if(index == (size - 1)) return Last;
+                //Reading from cached node
+                dlNode* outNode = tryToCache(index);
+                if(outNode != nullptr){
+                //Success
+                    return outNode;
+                }
+                else{
+                //Failed
+                    if(index <= size/2){
+                    //Targeted node is closer to the front of the list 
+                        outNode = First;
+                        for(int i = 0; i <= (index - 1); i++){
+                            outNode = outNode->next;
+                        }
+                        return outNode;
+                        
+                    
+                    }
+                    else{
+                    //Targeted node is closer to the end of the list
+                        outNode = Last;
+                        for(int i = size; i >= (index - 1); i--){
+                            outNode = outNode->prev;
+                        }
+                        return outNode;
+                    }
+                }
+                
 
+            }
 
         public:
             dlList(){
@@ -102,7 +144,12 @@ namespace sxEditCore::dataStructures{
                 newNode -> prev = Last;
                 Last -> next = newNode;
                 Last = newNode;
-
+            }
+            //Return value of node with specified index.
+            char get(int index){ 
+                dlNode* out = getNode(index);
+                if(out == nullptr) return errorChar;
+                return out->value;
             }
 
     }; 
