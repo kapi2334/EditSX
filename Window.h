@@ -1,6 +1,8 @@
 //Window logic handling f.e. drawing, getting keys etc.
 #include <windows.h>
 #include <string.h>
+#include <winuser.h>
+#include "KeyActionHander.h"
 namespace sxEditCore{
 
     class WindowsWindowLogic {
@@ -10,6 +12,7 @@ namespace sxEditCore{
             LPCSTR _windowName;
             LPCSTR _className;
             HINSTANCE _windowInstance;
+            KeyActionHander _keyHander;
 
             HWND _windowHandle;
 
@@ -53,6 +56,8 @@ namespace sxEditCore{
                         minmax->ptMinTrackSize.x = 300;
                         minmax->ptMinTrackSize.y = 300;
                     }
+                    case WM_KEYDOWN:
+                        _keyHander.registerPress(wParam,hwnd);
                     default:
                         return DefWindowProc(hwnd,uMsg,wParam,lParam);
                 }
@@ -85,6 +90,10 @@ namespace sxEditCore{
                 _className = windowClassName;
                 _windowInstance = instace;
             }
+            //Deconstructor
+            ~WindowsWindowLogic(){
+            }
+
             //Window creation
             bool Create(){
                 WNDCLASS wClass = GetWindowClass(Procedure);
