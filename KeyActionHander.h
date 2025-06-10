@@ -19,11 +19,11 @@ namespace sxEditCore{
             }
         public:
             void registerPress(WPARAM key, HWND hwnd){
-                switch(key){
+                /*switch(key){
                     case 0x09: //TAB
                     case 0x0D: //ENTER
                     break;
-                }
+                }*/
                 //Normal button clicked
                 if(key >= 0x30 && key <= 0x5A){
                     WCHAR tmp = getCharFromWparam(key);
