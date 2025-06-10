@@ -2,7 +2,7 @@
 #include <windows.h>
 #include <string.h>
 #include <winuser.h>
-#include "KeyActionHander.h"
+#include "KeyActionHandler.h"
 namespace sxEditCore{
 
     class WindowsWindowLogic {
@@ -12,7 +12,8 @@ namespace sxEditCore{
             LPCSTR _windowName;
             LPCSTR _className;
             HINSTANCE _windowInstance;
-            KeyActionHander _keyHander;
+            CursorHandler* _cursorHandler = nullptr;
+            KeyActionHandler _keyHandler;
 
             HWND _windowHandle;
 
@@ -57,7 +58,10 @@ namespace sxEditCore{
                         minmax->ptMinTrackSize.y = 300;
                     }
                     case WM_KEYDOWN:
-                        _keyHander.registerPress(wParam,hwnd);
+                        _keyHandler.registerPress(wParam,hwnd);
+                    case WM_PAINT:
+                        PAINTSTRUCT ps;
+                        _cursorHandler ->drawCursor(hwnd, ps);
                     default:
                         return DefWindowProc(hwnd,uMsg,wParam,lParam);
                 }
@@ -81,6 +85,9 @@ namespace sxEditCore{
                 _windowName = "Window";
                 _className = "Main Window Class";
                 _windowInstance = instace;
+                _cursorHandler = new CursorHandler();
+                _keyHandler = KeyActionHandler(_cursorHandler);
+        
             }
             //UserInput Constructor 
             WindowsWindowLogic(HINSTANCE instace, const char windowName[],const char windowClassName[], int length, int height){
@@ -89,9 +96,11 @@ namespace sxEditCore{
                 _windowName = windowName;
                 _className = windowClassName;
                 _windowInstance = instace;
+                _cursorHandler = new CursorHandler();
             }
             //Deconstructor
             ~WindowsWindowLogic(){
+                delete _cursorHandler;
             }
 
             //Window creation
@@ -105,7 +114,7 @@ namespace sxEditCore{
                         _windowName,
                         WS_OVERLAPPEDWINDOW,
                         CW_USEDEFAULT, CW_USEDEFAULT,
-                        _windowHeight, _windowLength,
+                        _windowLength, _windowHeight,
                         nullptr, nullptr,
                         _windowInstance, this);
                 //if _windowHandle is nullptr return false
