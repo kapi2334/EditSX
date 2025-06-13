@@ -19,61 +19,62 @@ namespace sxEditCore{
                 if(!(shift ^ caps)){ //!XOR 
                     tmp[0] = towlower(tmp[0]);
                 }
-
+                    
                 return *tmp;
             }
         public:
             void registerPress(WPARAM key, HWND hwnd){
                 try{
-                    switch(key){
-                        //case 0x09: //TAB
-                        //case 0x0D: //ENTER
-                        //Arrows
-                        case 0x25: //LEFT
-                            if(cursorHandler != nullptr){
-                                cursorHandler->moveCursorByX(-1); //one to the left
-                            }else{
-                                throw SXException("Fatal error occurred while trying to get cursor handler: handler does not exist.");   
-                            }
-                            break;
-                        case 0x26: //UP
-                            if(cursorHandler != nullptr){
-                                cursorHandler->moveCursorByY(-1); //one to the left
-                            }else{
-                                throw SXException("Fatal error occurred while trying to get cursor handler: handler does not exist.");   
-                            }
-                            break;
-                        case 0x27: //RIGHT
-                            if(cursorHandler != nullptr){
-                                cursorHandler->moveCursorByX(1); //one to the left
-                            }else{
-                                throw SXException("Fatal error occurred while trying to get cursor handler: handler does not exist.");   
-                            }
-                            break;
-                        case 0x28: //DOWN
-                            if(cursorHandler != nullptr){
-                                cursorHandler->moveCursorByY(1); //one to the left
-                            }else{
-                                throw SXException("Fatal error occurred while trying to get cursor handler: handler does not exist.");   
-                            }
-                            break;
-                    }
-                    //Normal button clicked
-                    if(key >= 0x30 && key <= 0x5A){
-                        WCHAR tmp = getCharFromWparam(key);
+                switch(key){
+                    //case 0x09: //TAB
+                    //case 0x0D: //ENTER
+                    //Arrows
+                    case 0x25: //LEFT
+                        if(cursorHandler != nullptr){
+                            cursorHandler->moveCursorByX(-1); //one to the left
+                        }else{
+                            throw SXException("Fatal error occurred while trying to get cursor handler: handler does not exist.");   
+                        }
+                        break;
+                    case 0x26: //UP
+                        if(cursorHandler != nullptr){
+                        cursorHandler->moveCursorByY(-1); //one to the left
+                        }else{
+                            throw SXException("Fatal error occurred while trying to get cursor handler: handler does not exist.");   
+                        }
+                        break;
+                    case 0x27: //RIGHT
+                        if(cursorHandler != nullptr){
+                        cursorHandler->moveCursorByX(1); //one to the left
+                        }else{
+                            throw SXException("Fatal error occurred while trying to get cursor handler: handler does not exist.");   
+                        }
+                        break;
+                    case 0x28: //DOWN
+                        if(cursorHandler != nullptr){
+                        cursorHandler->moveCursorByY(1); //one to the left
+                        }else{
+                            throw SXException("Fatal error occurred while trying to get cursor handler: handler does not exist.");   
+                        }
+                        break;
+                }
+                //Normal button clicked
+                if(key >= 0x30 && key <= 0x5A){
+                    WCHAR tmp = getCharFromWparam(key);
 
-                        MessageBoxW(hwnd,&tmp,L"Button clicked", MB_OK);
-                    }
+                    MessageBoxW(hwnd,&tmp,L"Button clicked", MB_OK);
+                }
                 }catch(const SXException& e){
                     MessageBoxA(hwnd,e.what(),"Error occured", MB_ICONERROR|MB_OK);
                 }
             }
-            KeyActionHandler(){
-                cursorHandler = nullptr;
-            }
-            KeyActionHandler(CursorHandler* cursorHandler){
-                this->cursorHandler = cursorHandler; 
-            }    
+        KeyActionHandler(){
+            cursorHandler = nullptr;
+        }
+        KeyActionHandler(CursorHandler* cursorHandler){
+           std::cout<<"Created keyAction handler.";
+           this->cursorHandler = cursorHandler; 
+        }    
     };
 
 

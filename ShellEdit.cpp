@@ -11,7 +11,7 @@
                 "SX_Main_Window_Class",
                 400,400);
         if(!mainWindow.Create()) throw std::runtime_error("Unable to create window (Windows model). App cannot be started...");
-        mainWindow.Show(nCmdShow, false);
+        mainWindow.Show(nCmdShow, true);
 
         MSG msg = {};
 

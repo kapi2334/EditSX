@@ -1,4 +1,5 @@
 //Window logic handling f.e. drawing, getting keys etc.
+#include <iostream>
 #include <windows.h>
 #include <string.h>
 #include <winuser.h>
@@ -48,22 +49,33 @@ namespace sxEditCore{
             LRESULT HandleMessage(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam){
                 //Window message loop
                 switch(uMsg){
-                    case WM_DESTROY:
+                    case WM_DESTROY:{
                         PostQuitMessage(0);
                         return 0;
+                    }    
                         //Setting min. window size    
                     case WM_GETMINMAXINFO:{
                         MINMAXINFO* minmax = (MINMAXINFO*)lParam;
                         minmax->ptMinTrackSize.x = 300;
                         minmax->ptMinTrackSize.y = 300;
                     }
-                    case WM_KEYDOWN:
+                    case WM_KEYDOWN:{
                         _keyHandler.registerPress(wParam,hwnd);
-                    case WM_PAINT:
+                    }
+                    case WM_PAINT:{
                         PAINTSTRUCT ps;
-                        _cursorHandler ->drawCursor(hwnd, ps);
-                    default:
+                        if(_cursorHandler){
+                            _cursorHandler ->drawCursor(hwnd, ps);
+                        }else{
+                            MessageBoxA(hwnd,"Critical error: Unable to create cursor (nullptr).","Error occured",MB_ICONERROR|MB_OK);
+                        }
+                    }
+                    default:{
                         return DefWindowProc(hwnd,uMsg,wParam,lParam);
+                        break;
+                    }
+
+
                 }
 
             }
@@ -97,6 +109,7 @@ namespace sxEditCore{
                 _className = windowClassName;
                 _windowInstance = instace;
                 _cursorHandler = new CursorHandler();
+                _keyHandler = KeyActionHandler(_cursorHandler);
             }
             //Deconstructor
             ~WindowsWindowLogic(){
@@ -118,6 +131,7 @@ namespace sxEditCore{
                         nullptr, nullptr,
                         _windowInstance, this);
                 //if _windowHandle is nullptr return false
+
                return _windowHandle != nullptr; 
             }
             //Show created window
@@ -127,10 +141,6 @@ namespace sxEditCore{
                } 
                ShowWindow(_windowHandle,nCmdShow); 
             }
-
-            
-            
-
 
     };
 
