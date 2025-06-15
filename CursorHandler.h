@@ -133,8 +133,23 @@ namespace sxEditCore{
                 EndPaint(_windowHandle, &ps);
                 redraw();
             }
-            void drawLetter(char input){
-                
+            void drawLetter(char input,PAINTSTRUCT ps, HFONT& font){
+                //Conversion to null-terminated string
+                char tmp[2] = {input, '\0'};
+                HDC deviceHandle = BeginPaint(_windowHandle,&ps);
+                //If passed font is invalid, create new one 
+                if(font == NULL){
+                    throw new SXException("Font passed to function is invalid, used generic one insted.",_windowHandle);
+                }
+                //Setting new font
+                HFONT oldFont = (HFONT) SelectObject(deviceHandle,font);
+                //Writing out text
+                TextOutA(deviceHandle,x,y,tmp,1);
+                //Setting back old font
+                SelectObject(deviceHandle, oldFont);
+                EndPaint(_windowHandle,&ps);
+                //Move cursor to next position.
+                moveCursorByX(1);
             }
     };
 

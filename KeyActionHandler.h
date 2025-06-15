@@ -60,8 +60,7 @@ namespace sxEditCore{
                 //Normal button clicked
                 if(key >= 0x30 && key <= 0x5A){
                     WCHAR tmp = getCharFromWparam(key);
-
-                    MessageBoxW(hwnd,&tmp,L"Button clicked", MB_OK);
+                    
                 }
                 }catch(const SXException& e){
                     MessageBoxA(hwnd,e.what(),"Error occured", MB_ICONERROR|MB_OK);
