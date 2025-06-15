@@ -27,12 +27,14 @@ namespace sxEditCore{
                     "\nWidth:" << width << 
                     "\nHeight:" << height << 
                     "\nRealX: "<< x + offsetX << 
-                    "\nRealY:" << y + offsetY;
+                    "\nRealY:" << y + offsetY << 
+                    "\nWindowWidth" << _windowmaxX <<
+                    "\nWindowHeight" << _windowmaxY;
             }
             void updateWindowSizes(){
                 //Calculating effective window size
-                _windowmaxX = _windowRect.right - _windowRect.left;
-                _windowmaxY = _windowRect.bottom - _windowRect.top;
+                _windowmaxX = _windowRect.right - (_windowRect.left + width + 2*offsetX);
+                _windowmaxY = _windowRect.bottom - (_windowRect.top + height + offsetY);
             }
         public:
             CursorHandler(HWND& windowHandle){
@@ -41,7 +43,7 @@ namespace sxEditCore{
                     std::cout << "Fatal Error: Window handler passed to CurosrHandler function is invalid.";
                 }
                 if(!GetClientRect(_windowHandle, &_windowRect)){
-                    throw new SXException("Failed to get client field...: " + GetLastError(), windowHandle); 
+                    throw new SXException("Failed to get client field...", windowHandle); 
                 }
                 std::cout<<"Creating cursor...\n";
             }
@@ -53,7 +55,7 @@ namespace sxEditCore{
                 updateWindowSizes();
                 int effectiveNewX = newX*width;
                 //Checking if cursor will not go out of the window filed.
-                if( effectiveNewX >= 0 && effectiveNewX <= _windowmaxX){
+                if( effectiveNewX >= 0 && effectiveNewX <= _windowmaxX-width-offsetX){
                     x = newX*width;
                     return true;
                 } 
@@ -93,6 +95,7 @@ namespace sxEditCore{
                 int effectiveNewY =  this->y + (y*height);
                 //Checking if cursor will not go out of the window filed.
                 if( effectiveNewY >= 0 && effectiveNewY <= _windowmaxY){
+                    std::cout<<"\n-------------Effective new Y: " << effectiveNewY<<"\n";
                     this->y = effectiveNewY; 
                     return true;
                 }
