@@ -63,17 +63,30 @@ namespace sxEditCore {
         HFONT getFont() const {
             return font;
         }
-
-        void updateFont(int size, int weight, bool italic, bool underline, bool strikeout) {
+        
+        //Sets up new font size
+        void updateFontSize(int size){
             logFont.lfHeight = size;
             logFont.lfWidth = size;
-            logFont.lfWeight = weight;
-            logFont.lfItalic = italic;
-            logFont.lfUnderline = underline;
-            logFont.lfStrikeOut = strikeout;
 
             recreateFont();
         }
+        //Switches up (true -> false, false-> true) font's italic property.
+        void switchItalic(bool isItalic){
+            logFont.lfItalic = !logFont.lfItalic;
+            recreateFont();
+        }
+        //Switches up (true -> false, false-> true) font's underline property.
+        void switchUnderline(bool isUnderlined){
+            logFont.lfUnderline= !logFont.lfUnderline;
+            recreateFont();
+        }
+        //Switches up (true -> false, false-> true) font's strikeout property.
+        void switchStrikeout(bool isStrikedout){
+            logFont.lfStrikeOut= !logFont.lfStrikeOut;
+            recreateFont();
+        }
+
     };
 }
 
