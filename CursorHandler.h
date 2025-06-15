@@ -1,6 +1,7 @@
 #include <Windows.h>
 #include <iostream>
 #include <winuser.h>
+#include "SXException.h"
 namespace sxEditCore{
     class CursorHandler{
         private:
@@ -14,12 +15,11 @@ namespace sxEditCore{
             const int height = 18;
             const int offsetX = 10;
             const int offsetY = 10;
-            HWND  handle;
-        public:
-            CursorHandler(){
-                std::cout<<"Creating cursor...\n";
-            }
-
+            int _windowmaxX = 0;
+            int _windowmaxY = 0;
+            HWND  _windowHandle;
+            RECT _windowRect; //Client field react
+                               //
             void writeOutDebug(){
                 std::cout<<"Cursor data:\n"
                     << "X:" << x << 
@@ -29,25 +29,74 @@ namespace sxEditCore{
                     "\nRealX: "<< x + offsetX << 
                     "\nRealY:" << y + offsetY;
             }
+            void updateWindowSizes(){
+                //Calculating effective window size
+                _windowmaxX = _windowRect.right - _windowRect.left;
+                _windowmaxY = _windowRect.bottom - _windowRect.top;
+            }
+        public:
+            CursorHandler(HWND& windowHandle){
+                this->_windowHandle = windowHandle;
+                if(_windowHandle == nullptr) {
+                    std::cout << "Fatal Error: Window handler passed to CurosrHandler function is invalid.";
+                }
+                if(!GetClientRect(_windowHandle, &_windowRect)){
+                    throw new SXException("Failed to get client field...: " + GetLastError(), windowHandle); 
+                }
+                std::cout<<"Creating cursor...\n";
+            }
+
 
             //Sets new X param 
-            void updateCursorX(int newX){
-                x = newX*width;
+            bool updateCursorX(int newX){
+                //Making sure window sizes collected in variables are up to date.
+                updateWindowSizes();
+                int effectiveNewX = newX*width;
+                //Checking if cursor will not go out of the window filed.
+                if( effectiveNewX >= 0 && effectiveNewX <= _windowmaxX){
+                    x = newX*width;
+                    return true;
+                } 
+                return false;
             } 
 
             //Sets new Y param 
-            void updateCursorY(int newY){
-                y = newY*height;
+            bool updateCursorY(int newY){
+                //Making sure window sizes collected in variables are up to date.
+                updateWindowSizes();
+                int effectiveNewY = newY * height; 
+                //Checking if cursor will not go out of the window filed.
+                if( effectiveNewY >= 0 && effectiveNewY <= _windowmaxY){
+                    y = effectiveNewY;
+                    return true;
+                }
+                return false;
             } 
 
             //Moves cursor by X value
-            void moveCursorByX(int x){
-                this->x = this->x + (x*width);
+            bool moveCursorByX(int x){
+                //Making sure window sizes collected in variables are up to date.
+                updateWindowSizes();
+                int effectiveNewX =  this->x + (x*width);
+                //Checking if cursor will not go out of the window filed.
+                if( effectiveNewX >= 0 && effectiveNewX <= _windowmaxX){
+                    this->x = effectiveNewX; 
+                    return true;
+                }
+                return false;
             }
 
             //Moves cursor by Y value
-            void moveCursorByY(int y){
-                this->y = this->y + (y*height); 
+            bool moveCursorByY(int y){
+                //Making sure window sizes collected in variables are up to date.
+                updateWindowSizes();
+                int effectiveNewY =  this->y + (y*height);
+                //Checking if cursor will not go out of the window filed.
+                if( effectiveNewY >= 0 && effectiveNewY <= _windowmaxY){
+                    this->y = effectiveNewY; 
+                    return true;
+                }
+                return false;
             }
             int getXPosition(){
                 return x;
@@ -56,15 +105,14 @@ namespace sxEditCore{
                 return y;
             }
             void redraw(){
-                InvalidateRect(handle,NULL,true);
-                UpdateWindow(handle);
+                InvalidateRect(_windowHandle,NULL,true);
+                UpdateWindow(_windowHandle);
             }
 
-            void drawCursor(HWND hwnd, PAINTSTRUCT ps){
+            void drawCursor(PAINTSTRUCT ps){
                 std::cout<<"Drawing cursor...";
-                handle = hwnd;
                 writeOutDebug();
-                HDC deviceHande = BeginPaint(hwnd, &ps);
+                HDC deviceHande = BeginPaint(_windowHandle, &ps);
                 HPEN cursorPen = CreatePen(PS_SOLID, 1,RGB(255,255,255));
                 HPEN oldPen = (HPEN) SelectObject(deviceHande, cursorPen);
                 switch(type){
@@ -79,8 +127,11 @@ namespace sxEditCore{
                 }
                 SelectObject(deviceHande, oldPen);
                 DeleteObject(cursorPen);
-                EndPaint(hwnd, &ps);
+                EndPaint(_windowHandle, &ps);
                 redraw();
+            }
+            void drawLetter(char input){
+                
             }
     };
 

@@ -65,7 +65,7 @@ namespace sxEditCore{
                     case WM_PAINT:{
                         PAINTSTRUCT ps;
                         if(_cursorHandler){
-                            _cursorHandler ->drawCursor(hwnd, ps);
+                            _cursorHandler ->drawCursor(ps);
                         }else{
                             MessageBoxA(hwnd,"Critical error: Unable to create cursor (nullptr).","Error occured",MB_ICONERROR|MB_OK);
                         }
@@ -97,8 +97,6 @@ namespace sxEditCore{
                 _windowName = "Window";
                 _className = "Main Window Class";
                 _windowInstance = instace;
-                _cursorHandler = new CursorHandler();
-                _keyHandler = KeyActionHandler(_cursorHandler);
         
             }
             //UserInput Constructor 
@@ -108,8 +106,6 @@ namespace sxEditCore{
                 _windowName = windowName;
                 _className = windowClassName;
                 _windowInstance = instace;
-                _cursorHandler = new CursorHandler();
-                _keyHandler = KeyActionHandler(_cursorHandler);
             }
             //Deconstructor
             ~WindowsWindowLogic(){
@@ -131,7 +127,11 @@ namespace sxEditCore{
                         nullptr, nullptr,
                         _windowInstance, this);
                 //if _windowHandle is nullptr return false
-
+               _cursorHandler = new CursorHandler(_windowHandle);
+               _keyHandler = KeyActionHandler(_cursorHandler);
+               if(_cursorHandler == nullptr){
+                    MessageBoxA(_windowHandle, "Critical error: Cursor creation failed.", "Error.", MB_ICONERROR|MB_OK);
+               }
                return _windowHandle != nullptr; 
             }
             //Show created window

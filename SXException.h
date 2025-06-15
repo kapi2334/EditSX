@@ -1,3 +1,4 @@
+#include <winuser.h>
 namespace sxEditCore{
     class SXException: public std::exception{
         private:
@@ -5,6 +6,9 @@ namespace sxEditCore{
         public:
             SXException(const std::string& msg){
                 message = msg;
+            }
+            SXException(const std::string& msg, const HWND windowHandle){
+                MessageBoxA(windowHandle,msg.c_str(), "Fatal error occured.", MB_ICONERROR|MB_RETRYCANCEL);
             }
         
             const char* what() const noexcept override{

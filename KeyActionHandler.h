@@ -3,7 +3,6 @@
 #include <wchar.h>
 #include <winuser.h>
 #include "CursorHandler.h"
-#include "SXException.h"
 namespace sxEditCore{
     class KeyActionHandler{
         private:
