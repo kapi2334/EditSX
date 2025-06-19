@@ -4,6 +4,7 @@
 #include <string.h>
 #include <winuser.h>
 #include "KeyActionHandler.h"
+#include "FontHandler.h"
 namespace sxEditCore{
 
     class WindowsWindowLogic {
@@ -15,6 +16,7 @@ namespace sxEditCore{
             HINSTANCE _windowInstance;
             CursorHandler* _cursorHandler = nullptr;
             KeyActionHandler _keyHandler;
+            FontHandler* _mainTextFont ;
 
             HWND _windowHandle;
 
@@ -97,6 +99,7 @@ namespace sxEditCore{
                 _windowName = "Window";
                 _className = "Main Window Class";
                 _windowInstance = instace;
+                _mainTextFont = new FontHandler("Arial", 12);
         
             }
             //UserInput Constructor 
@@ -106,10 +109,12 @@ namespace sxEditCore{
                 _windowName = windowName;
                 _className = windowClassName;
                 _windowInstance = instace;
+                _mainTextFont = new FontHandler("Arial", 12);
             }
             //Deconstructor
             ~WindowsWindowLogic(){
                 delete _cursorHandler;
+                delete _mainTextFont;
             }
 
             //Window creation
